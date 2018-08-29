@@ -4,7 +4,7 @@
     <Copyright>Copyright © 2014-2017 Frank Hommers, Burhan Irmikci (barhun), Zachary Sims(zsims), kgamecarter, Stafford Williams (staff0rd), briangweber, Viktor Svyatokha (ahydrax), Christopher Dresel (Dresel), Ben Herila (bherila), Vytautas Kasparavičius (vytautask)</Copyright>
     <AssemblyTitle>Hangfire PostgreSql Storage</AssemblyTitle>
     <Authors>Frank Hommers, Burhan Irmikci (barhun), Zachary Sims(zsims), kgamecarter, Stafford Williams (staff0rd), briangweber, Viktor Svyatokha (ahydrax), Christopher Dresel (Dresel), Ben Herila (bherila), Vytautas Kasparavičius (vytautask)</Authors>
-    <TargetFrameworks>netstandard1.6;net452</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
     <AssemblyName>Hangfire.PostgreSql</AssemblyName>
     <OutputType>Library</OutputType>
     <PackageId>Hangfire.PostgreSql.ahydrax</PackageId>
@@ -12,21 +12,13 @@
     <PackageReleaseNotes>https://github.com/ahydrax/Hangfire.PostgreSql/releases</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/ahydrax/Hangfire.PostgreSql</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/ahydrax/Hangfire.PostgreSql/master/LICENSE.md</PackageLicenseUrl>
-    <Version>1.6.0.0-beta3</Version>
+    <Version>1.6.0.0-betanpgsql4</Version>
     <FileVersion>1.6.0.0</FileVersion>
     <AssemblyVersion>1.6.0.0</AssemblyVersion>
     <NeutralLanguage />
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Company>Frank Hommers, Burhan Irmikci (barhun), Zachary Sims(zsims), kgamecarter, Stafford Williams (staff0rd), briangweber, Viktor Svyatokha (ahydrax), Christopher Dresel (Dresel), Ben Herila (bherila), Vytautas Kasparavičius (vytautask)</Company>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
-    <DefineConstants>$(DefineConstants);NETCORE1</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
-    <Reference Include="System.Configuration" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
   <ItemGroup>
     <None Remove="Schema\Install.v10.sql" />
     <None Remove="Schema\Install.v3.sql" />
@@ -48,7 +40,8 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.5" />
     <PackageReference Include="Hangfire.Core" Version="1.6.20" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Npgsql" Version="3.2.7" />
+    <PackageReference Include="Npgsql" Version="4.0.2" />
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@ namespace Hangfire.PostgreSql.Tests.Web
         private const string ConnectionStringVariableName = "Hangfire_PostgreSql_ConnectionString";
 
         private const string DefaultConnectionString =
-            @"Server=localhost;Port=5432;Database=hangfire_tests;User Id=postgres;Password=password;Search Path=hangfire";
+            @"Server=localhost;Port=5432;Database=hangfire_tests;User Id=postgres;Password=password;Search Path=hangfire;Enlist=true";
 
         public static string GetConnectionString() => Environment.GetEnvironmentVariable(ConnectionStringVariableName) ?? DefaultConnectionString;
 
