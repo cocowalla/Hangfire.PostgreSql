@@ -17,7 +17,7 @@ namespace Hangfire.PostgreSql
         private readonly IConnectionProvider _connectionProvider;
         private readonly string _storageInfo;
         private readonly StorageConnection _storageConnection;
-        private readonly MonitoringApi _monitoringApi;
+        public IMonitoringApi MonitoringApi { get; set; }
 
         /// <summary>
         /// Initializes PostgreSqlStorage with the provided connection string and default PostgreSqlStorageOptions.
@@ -38,7 +38,7 @@ namespace Hangfire.PostgreSql
         /// <exception cref="ArgumentNullException"><paramref name="connectionString"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="options"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="connectionString"/> is not valid PostgreSql connection string.</exception>
-        public PostgreSqlStorage(string connectionString, PostgreSqlStorageOptions options)
+        public PostgreSqlStorage(string connectionString, PostgreSqlStorageOptions options, IJobQueue queue = null)
         {
             Guard.ThrowIfNull(connectionString, nameof(connectionString));
             Guard.ThrowIfNull(options, nameof(options));
@@ -49,9 +49,9 @@ namespace Hangfire.PostgreSql
             var builder = new NpgsqlConnectionStringBuilder(connectionString);
             _connectionProvider = CreateConnectionProvider(connectionString, builder);
 
-            var queue = new JobQueue(_connectionProvider, _options);
+            queue = queue ?? new JobQueue(_connectionProvider, _options);
             _storageConnection = new StorageConnection(_connectionProvider, queue, _options);
-            _monitoringApi = new MonitoringApi(_connectionProvider);
+            MonitoringApi = new MonitoringApi(_connectionProvider);
             _storageInfo = $"PostgreSQL Server: Host: {builder.Host}, DB: {builder.Database}, Schema: {builder.SearchPath}, Pool: {_connectionProvider.GetType().Name}";
 
             PrepareSchemaIfNecessary(builder.SearchPath);
@@ -74,7 +74,7 @@ namespace Hangfire.PostgreSql
 
         internal IConnectionProvider ConnectionProvider => _connectionProvider;
 
-        public override IMonitoringApi GetMonitoringApi() => _monitoringApi;
+        public override IMonitoringApi GetMonitoringApi() => MonitoringApi;
 
         public override IStorageConnection GetConnection() => _storageConnection;
 

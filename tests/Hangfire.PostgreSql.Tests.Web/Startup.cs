@@ -1,4 +1,5 @@
 ﻿using System;
+using Hangfire.PostgreSql.AMQP;
 using Hangfire.PostgreSql.Tests.Integration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,7 +37,13 @@ namespace Hangfire.PostgreSql.Tests.Web
                 configuration.UseDashboardMetric(PostgreSqlDashboardMetrics.PostgreSqlLocksCount);
                 configuration.UseDashboardMetric(PostgreSqlDashboardMetrics.PostgreSqlServerVersion);
 
-                configuration.UsePostgreSqlStorage(GetConnectionString());
+                var storage = new PostgreSqlStorage(
+                    GetConnectionString(),
+                    new PostgreSqlStorageOptions(),
+                    new AmqpJobQueue());
+                storage.MonitoringApi = new AmqpMonitoringApiDecorator(storage.MonitoringApi);
+
+                configuration.UseStorage(storage);
             });
         }
 

@@ -3,7 +3,7 @@ using Hangfire.Storage;
 
 namespace Hangfire.PostgreSql
 {
-    internal interface IJobQueue
+    public interface IJobQueue
     {
         void Enqueue(string queue, string jobId);
         IFetchedJob Dequeue(string[] queues, CancellationToken cancellationToken);
