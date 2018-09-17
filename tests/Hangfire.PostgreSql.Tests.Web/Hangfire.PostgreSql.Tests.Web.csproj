@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hangfire.PostgreSql.AMQP\Hangfire.PostgreSql.AMQP.csproj" />
+    <ProjectReference Include="..\..\src\Hangfire.PostgreSql.Stomp\Hangfire.PostgreSql.Stomp.csproj" />
     <ProjectReference Include="..\..\src\Hangfire.PostgreSql\Hangfire.PostgreSql.csproj" />
     <ProjectReference Include="..\Hangfire.PostgreSql.Tests\Hangfire.PostgreSql.Tests.csproj" />
   </ItemGroup>

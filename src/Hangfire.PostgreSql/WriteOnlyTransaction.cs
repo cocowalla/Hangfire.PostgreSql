@@ -114,7 +114,7 @@ VALUES (@jobId, @name, @reason, @createdAt, @data);
                 }, trx));
         }
 
-        public override void AddToQueue(string queue, string jobId) => _queue.Enqueue(queue, jobId);
+        public override void AddToQueue(string queue, string jobId) => QueueCommand((c, t) => _queue.Enqueue(queue, jobId));
 
         public override void IncrementCounter(string key)
         {

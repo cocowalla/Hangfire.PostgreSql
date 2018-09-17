@@ -1,10 +1,12 @@
 ﻿using System;
 using Hangfire.PostgreSql.AMQP;
+using Hangfire.PostgreSql.Stomp;
 using Hangfire.PostgreSql.Tests.Integration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Stomp.Net;
 
 namespace Hangfire.PostgreSql.Tests.Web
 {
@@ -37,11 +39,17 @@ namespace Hangfire.PostgreSql.Tests.Web
                 configuration.UseDashboardMetric(PostgreSqlDashboardMetrics.PostgreSqlLocksCount);
                 configuration.UseDashboardMetric(PostgreSqlDashboardMetrics.PostgreSqlServerVersion);
 
+                var queue = new StompJobQueue("tcp://localhost:61616",
+                    new StompConnectionSettings
+                    {
+                        UserName = "admin",
+                        Password = "admin"
+                    });
                 var storage = new PostgreSqlStorage(
                     GetConnectionString(),
                     new PostgreSqlStorageOptions(),
-                    new AmqpJobQueue());
-                storage.MonitoringApi = new AmqpMonitoringApiDecorator(storage.MonitoringApi);
+                    queue
+                    );
 
                 configuration.UseStorage(storage);
             });

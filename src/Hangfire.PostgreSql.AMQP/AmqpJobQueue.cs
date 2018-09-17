@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using EasyNetQ;
 using EasyNetQ.Topology;
 using Hangfire.Storage;
