@@ -14,23 +14,23 @@ namespace Hangfire.PostgreSql.Connectivity
 
         private static readonly ILog Logger = LogProvider.GetLogger(typeof(DefaultConnectionProvider));
 
-        private readonly string _connectionString;
+        private readonly IConnectionBuilder _connectionBuilder;
         private readonly ConcurrentBag<NpgsqlConnection> _connectionPool;
         private readonly Action<ConnectionHolder> _connectionDisposer;
 
         private volatile int _activeConnections;
         private readonly int _maxConnections;
 
-        public DefaultConnectionProvider(string connectionString)
+        public DefaultConnectionProvider(IConnectionBuilder connectionBuilder)
         {
-            Guard.ThrowIfConnectionStringIsInvalid(connectionString);
+            Guard.ThrowIfNull(connectionBuilder, nameof(connectionBuilder));
+            Guard.ThrowIfConnectionStringIsInvalid(connectionBuilder.ConnectionStringBuilder.ConnectionString);
 
-            _connectionString = connectionString;
+            _connectionBuilder = connectionBuilder;
             _connectionPool = new ConcurrentBag<NpgsqlConnection>();
             _connectionDisposer = ReleaseConnection;
 
-            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(_connectionString);
-            _maxConnections = connectionStringBuilder.MaxPoolSize;
+            _maxConnections = _connectionBuilder.ConnectionStringBuilder.MaxPoolSize;
         }
 
         internal int ActiveConnections => _activeConnections;
@@ -75,7 +75,7 @@ namespace Hangfire.PostgreSql.Connectivity
             NpgsqlConnection newConnection;
             try
             {
-                newConnection = new NpgsqlConnection(_connectionString);
+                newConnection = _connectionBuilder.Build();
                 newConnection.Open();
             }
             catch (Exception e)

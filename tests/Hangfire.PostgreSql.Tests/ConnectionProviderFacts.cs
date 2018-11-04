@@ -9,18 +9,12 @@ namespace Hangfire.PostgreSql.Tests
     public class ConnectionProviderFacts
     {
         [Fact]
-        public void Ctor_ThrowsAnException_WhenConnectionStringIsNull()
+        public void Ctor_ThrowsAnException_WhenConnectionBuilderIsNull()
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => new DefaultConnectionProvider(null));
-            Assert.Equal("connectionString", exception.ParamName);
-        }
 
-        [Fact]
-        public void Ctor_ThrowsAnException_WhenConnectionStringIsInvalid()
-        {
-            var exception = Assert.Throws<ArgumentException>(
-                () => new DefaultConnectionProvider("testtest"));
+            Assert.Equal("connectionBuilder", exception.ParamName);
         }
 
         [Fact]
@@ -53,7 +47,7 @@ namespace Hangfire.PostgreSql.Tests
         [Fact]
         public void Dispose_ReleasesConnections()
         {
-            var connectionsCount = 10;
+            const int connectionsCount = 10;
             var provider = CreateProvider();
 
             for (var i = 0; i < connectionsCount; i++)
@@ -88,6 +82,6 @@ namespace Hangfire.PostgreSql.Tests
             });
         }
 
-        private static DefaultConnectionProvider CreateProvider() => new DefaultConnectionProvider(ConnectionUtils.GetConnectionString());
+        private static DefaultConnectionProvider CreateProvider() => new DefaultConnectionProvider(ConnectionUtils.GetConnectionBuilder());
     }
 }

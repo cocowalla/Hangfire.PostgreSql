@@ -1,19 +1,18 @@
-﻿using Npgsql;
-
+﻿
 namespace Hangfire.PostgreSql.Connectivity
 {
     internal sealed class NpgsqlConnectionProvider : IConnectionProvider
     {
-        private readonly string _connectionString;
+        private readonly IConnectionBuilder _connectionBuilder;
 
-        public NpgsqlConnectionProvider(string connectionString)
+        public NpgsqlConnectionProvider(IConnectionBuilder connectionBuilder)
         {
-            _connectionString = connectionString;
+            this._connectionBuilder = connectionBuilder;
         }
 
         public ConnectionHolder AcquireConnection()
         {
-            var connection = new NpgsqlConnection(_connectionString);
+            var connection = _connectionBuilder.Build();
             connection.Open();
             return new ConnectionHolder(connection, holder => holder.Connection.Dispose());
         }

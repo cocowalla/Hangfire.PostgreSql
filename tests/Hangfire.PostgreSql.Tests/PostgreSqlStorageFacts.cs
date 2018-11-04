@@ -28,7 +28,7 @@ namespace Hangfire.PostgreSql.Tests
         public void Ctor_ThrowsAnException_WhenOptionsValueIsNull()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new PostgreSqlStorage("hello", null));
+                () => new PostgreSqlStorage(ConnectionUtils.GetConnectionString(), null));
 
             Assert.Equal("options", exception.ParamName);
         }

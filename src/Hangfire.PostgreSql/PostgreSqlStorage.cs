@@ -39,29 +39,56 @@ namespace Hangfire.PostgreSql
         /// <exception cref="ArgumentNullException"><paramref name="options"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="connectionString"/> is not valid PostgreSql connection string.</exception>
         public PostgreSqlStorage(string connectionString, PostgreSqlStorageOptions options)
+            : this(new DefaultConnectionBuilder(connectionString), options)
         {
-            Guard.ThrowIfNull(connectionString, nameof(connectionString));
+
+        }
+
+        /// <summary>
+        /// Initializes PostgreSqlStorage with the provided connection builder and default PostgreSqlStorageOptions.
+        /// </summary>
+        /// <param name="connectionBuilder">A Postgres connection builder</param>
+        /// <exception cref="ArgumentNullException"><paramref name="connectionBuilder"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="connectionBuilder"/> is not valid PostgreSql connection string </exception>
+        public PostgreSqlStorage(IConnectionBuilder connectionBuilder)
+            : this(connectionBuilder, new PostgreSqlStorageOptions())
+        {
+
+        }
+        
+        /// <summary>
+        /// Initializes PostgreSqlStorage with the provided connection builder and the provided PostgreSqlStorageOptions.
+        /// </summary>
+        /// <param name="connectionBuilder">A Postgres connection builder</param>
+        /// <param name="options"></param>
+        /// <exception cref="ArgumentNullException"><paramref name="connectionBuilder"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="options"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="connectionBuilder"/> has an invalid PostgreSql connection string.</exception>
+        public PostgreSqlStorage(IConnectionBuilder connectionBuilder, PostgreSqlStorageOptions options)
+        {
+            Guard.ThrowIfNull(connectionBuilder, nameof(connectionBuilder));
             Guard.ThrowIfNull(options, nameof(options));
-            Guard.ThrowIfConnectionStringIsInvalid(connectionString);
+            Guard.ThrowIfConnectionStringIsInvalid(connectionBuilder.ConnectionStringBuilder.ConnectionString);
 
             _options = options;
 
-            var builder = new NpgsqlConnectionStringBuilder(connectionString);
-            _connectionProvider = CreateConnectionProvider(connectionString, builder);
+            _connectionProvider = CreateConnectionProvider(connectionBuilder);
 
             var queue = new JobQueue(_connectionProvider, _options);
             _storageConnection = new StorageConnection(_connectionProvider, queue, _options);
             _monitoringApi = new MonitoringApi(_connectionProvider);
+
+            var builder = connectionBuilder.ConnectionStringBuilder;
             _storageInfo = $"PostgreSQL Server: Host: {builder.Host}, DB: {builder.Database}, Schema: {builder.SearchPath}, Pool: {_connectionProvider.GetType().Name}";
 
             PrepareSchemaIfNecessary(builder.SearchPath);
         }
 
-        private static IConnectionProvider CreateConnectionProvider(string connectionString, NpgsqlConnectionStringBuilder connectionStringBuilder)
+        private static IConnectionProvider CreateConnectionProvider(IConnectionBuilder connectionBuilder)
         {
-            return connectionStringBuilder.Pooling
-                ? new NpgsqlConnectionProvider(connectionString)
-                : (IConnectionProvider)new DefaultConnectionProvider(connectionString);
+            return connectionBuilder.ConnectionStringBuilder.Pooling
+                ? new NpgsqlConnectionProvider(connectionBuilder)
+                : (IConnectionProvider)new DefaultConnectionProvider(connectionBuilder);
         }
 
         private void PrepareSchemaIfNecessary(string schemaName)
