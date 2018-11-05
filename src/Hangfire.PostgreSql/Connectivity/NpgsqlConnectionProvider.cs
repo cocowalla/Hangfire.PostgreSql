@@ -7,7 +7,7 @@ namespace Hangfire.PostgreSql.Connectivity
 
         public NpgsqlConnectionProvider(IConnectionBuilder connectionBuilder)
         {
-            this._connectionBuilder = connectionBuilder;
+            _connectionBuilder = connectionBuilder;
         }
 
         public ConnectionHolder AcquireConnection()
