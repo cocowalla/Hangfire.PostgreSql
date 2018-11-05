@@ -6,7 +6,6 @@ using Hangfire.PostgreSql.Connectivity;
 using Hangfire.PostgreSql.Maintenance;
 using Hangfire.Server;
 using Hangfire.Storage;
-using Npgsql;
 
 namespace Hangfire.PostgreSql
 {

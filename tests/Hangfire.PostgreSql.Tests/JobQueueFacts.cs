@@ -339,12 +339,12 @@ select i.""id"", @queue from i;
             return new JobQueue(provider, new PostgreSqlStorageOptions());
         }
 
-        private static void UseConnection(Action<NpgsqlConnection> action)
+        private static void UseConnection(Action<NpgsqlConnection> connectionSetup)
         {
             var provider = ConnectionUtils.GetConnectionProvider();
             using (var connection = provider.AcquireConnection())
             {
-                action(connection.Connection);
+                connectionSetup(connection.Connection);
             }
         }
 
